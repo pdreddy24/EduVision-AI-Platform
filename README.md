@@ -276,6 +276,13 @@ Never commit `.env`, API keys, JWT secrets, database credentials, uploads, or `n
 - **Next:** object storage, production containers, monitoring, backups, deployment, and CI/CD.
 - **Phase 6:** study guides, flashcards, quizzes, diagram explanations, table interpretation, chapter summaries, difficulty adaptation, and cross-document search.
 
+##RESULTS
+
+<img width="1108" height="563" alt="Screenshot 2026-07-20 184232" src="https://github.com/user-attachments/assets/b1342836-7bf7-4d21-93ea-abd2ce647053" />
+<img width="1096" height="556" alt="Screenshot 2026-07-20 222134" src="https://github.com/user-attachments/assets/4f37396a-b34a-44a5-9a64-705f6c3132c3" />
+<img width="1114" height="553" alt="Screenshot 2026-07-20 175221" src="https://github.com/user-attachments/assets/b4620bb1-f6b9-4447-ab10-cea84f081955" />
+
+
 ## License
 
 The backend package declares the ISC license. Add a root `LICENSE` file before public distribution.
