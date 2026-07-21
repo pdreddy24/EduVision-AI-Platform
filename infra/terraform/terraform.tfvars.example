@@ -1,0 +1,7 @@
+project_name       = "eduvision"
+aws_region         = "us-east-1"
+app_secret_arn     = "arn:aws:secretsmanager:us-east-1:123456789012:secret:eduvision/production-xxxxx"
+budget_email       = "you@example.com"
+monthly_budget_usd = 50
+api_image_tag      = "v1"
+worker_image_tag   = "v1"

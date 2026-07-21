@@ -1,0 +1,43 @@
+{
+  "name": "backend",
+  "version": "5.1.0",
+  "description": "EduVision production API with S3, BullMQ workers, and RAG",
+  "main": "server.js",
+  "scripts": {
+    "dev": "nodemon server.js",
+    "worker": "node workers/parserWorker.js",
+    "worker:dev": "nodemon workers/parserWorker.js",
+    "start": "node server.js",
+    "check": "node --check server.js && node --check workers/parserWorker.js && node --check controllers/summarizeController.js && node --check controllers/documentController.js && node --check controllers/optimizationController.js && node --check controllers/qaController.js && node --check services/documentParser.js && node --check services/documentQueue.js && node --check services/redisConnection.js && node --check services/objectStorage.js && node --check services/logger.js && node --check services/costLimitService.js && node --check services/textOptimizationService.js && node --check services/retrievalService.js && node --check services/qaService.js && node --check services/qaSecurityService.js",
+    "test": "node --test"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "@napi-rs/canvas": "^0.1.100",
+    "@aws-sdk/client-s3": "^3.922.0",
+    "bcryptjs": "^3.0.2",
+    "bullmq": "^5.58.5",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
+    "express-rate-limit": "^8.2.1",
+    "js-tiktoken": "^1.0.21",
+    "jsonwebtoken": "^9.0.2",
+    "mammoth": "^1.12.0",
+    "mongoose": "^8.19.2",
+    "multer": "^2.0.2",
+    "openai": "^6.9.0",
+    "pino": "^10.1.0",
+    "pino-http": "^11.0.0",
+    "pdf2json": "^4.0.0",
+    "pdfjs-dist": "^5.7.284",
+    "tesseract.js": "^7.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.11"
+  }
+}

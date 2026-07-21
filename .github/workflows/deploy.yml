@@ -1,0 +1,51 @@
+name: Deploy AWS
+on:
+  workflow_dispatch:
+    inputs:
+      image_tag:
+        description: Immutable image tag
+        required: true
+jobs:
+  deploy:
+    permissions: { id-token: write, contents: read }
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
+      - uses: aws-actions/amazon-ecr-login@v2
+      - name: Build and push backend image
+        env:
+          REPOSITORY: ${{ vars.ECR_REPOSITORY_URL }}
+          TAG: ${{ inputs.image_tag }}
+        run: |
+          docker build -t "$REPOSITORY:$TAG" Backend/Backend
+          docker push "$REPOSITORY:$TAG"
+      - uses: hashicorp/setup-terraform@v3
+      - name: Terraform apply
+        working-directory: infra/terraform
+        env:
+          TF_VAR_app_secret_arn: ${{ secrets.APP_SECRET_ARN }}
+          TF_VAR_budget_email: ${{ vars.BUDGET_EMAIL }}
+          TF_VAR_api_image_tag: ${{ inputs.image_tag }}
+          TF_VAR_worker_image_tag: ${{ inputs.image_tag }}
+        run: |
+          terraform init -backend-config="bucket=${{ vars.TF_STATE_BUCKET }}" -backend-config="key=eduvision/production.tfstate" -backend-config="region=${{ vars.AWS_REGION }}"
+          terraform apply -auto-approve
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm, cache-dependency-path: AiUser/package-lock.json }
+      - name: Build frontend
+        working-directory: AiUser
+        env:
+          VITE_API_BASE_URL: ${{ vars.APPLICATION_URL }}
+          VITE_AUTH_PREFIX: ${{ vars.APPLICATION_URL }}/auth
+          VITE_DASH_PREFIX: ${{ vars.APPLICATION_URL }}/dash
+          VITE_SUMMARIZE_PREFIX: ${{ vars.APPLICATION_URL }}/summarize
+          VITE_TRACK_PREFIX: ${{ vars.APPLICATION_URL }}/track
+        run: npm ci && npm run build
+      - name: Upload frontend and invalidate CDN
+        run: |
+          aws s3 sync AiUser/dist "s3://${{ vars.FRONTEND_BUCKET }}" --delete
+          aws cloudfront create-invalidation --distribution-id "${{ vars.CLOUDFRONT_DISTRIBUTION_ID }}" --paths '/*'

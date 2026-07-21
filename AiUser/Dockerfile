@@ -1,0 +1,21 @@
+FROM node:22-alpine AS build
+WORKDIR /app
+COPY package.json package-lock.json ./
+RUN npm ci
+COPY . .
+ARG VITE_API_BASE_URL
+ARG VITE_AUTH_PREFIX
+ARG VITE_DASH_PREFIX
+ARG VITE_SUMMARIZE_PREFIX
+ARG VITE_TRACK_PREFIX
+ENV VITE_API_BASE_URL=$VITE_API_BASE_URL \
+    VITE_AUTH_PREFIX=$VITE_AUTH_PREFIX \
+    VITE_DASH_PREFIX=$VITE_DASH_PREFIX \
+    VITE_SUMMARIZE_PREFIX=$VITE_SUMMARIZE_PREFIX \
+    VITE_TRACK_PREFIX=$VITE_TRACK_PREFIX
+RUN npm run build
+
+FROM nginx:1.27-alpine
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY --from=build /app/dist /usr/share/nginx/html
+EXPOSE 80
