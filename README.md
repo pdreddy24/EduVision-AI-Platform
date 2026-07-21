@@ -283,6 +283,6 @@ Never commit `.env`, API keys, JWT secrets, database credentials, uploads, or `n
 <img width="1114" height="553" alt="Screenshot 2026-07-20 175221" src="https://github.com/user-attachments/assets/b4620bb1-f6b9-4447-ab10-cea84f081955" />
 
 
-## License
 
-The backend package declares the ISC license. Add a root `LICENSE` file before public distribution.
+
+
